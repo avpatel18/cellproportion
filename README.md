@@ -1,8 +1,6 @@
 # CellProportion
 
-[![PyPI version](https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/PyPI_logo.svg/2560px-PyPI_logo.svg.png)
-[![Python 3.8+](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Blue_Python_3.8_Shield_Badge.svg/2560px-Blue_Python_3.8_Shield_Badge.svg.png)
-[![License: MIT](https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/MIT_Logo_New.svg/1200px-MIT_Logo_New.svg.png)
+![My Image]('image2.png')
 
 A Python package for comparing cell type proportions between experimental groups in **single-cell RNA-seq** and **spatial transcriptomics** data.
 
