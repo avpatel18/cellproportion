@@ -1,6 +1,6 @@
 # CellProportion
 
-![My Image]('image2.png')
+![My Image](image2.png)
 
 A Python package for comparing cell type proportions between experimental groups in **single-cell RNA-seq** and **spatial transcriptomics** data.
 
