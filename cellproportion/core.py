@@ -2,16 +2,16 @@ import pandas as pd
 import numpy as np
 import anndata
 from scipy.stats import mannwhitneyu
-from .methods import calculate_v2, explain_v2
-from .utils import load_metadata, load_colors, validate_groups, add_significance_categories, apply_default_colors
+from .methods import calculate_stat_values, explain_stat_values
+from .utils import load_metadata, load_colours, validate_groups, add_significance_categories, apply_default_colours
 
 def cell_type_abundance(
     mc,
     annotation="annotation",
-    sample_types="sample_types",
-    sample_ID="sample_ID",
-    sample_types_1="cSCC",
-    sample_types_2="PL",
+    sample_types=None,
+    sample_ID=None,
+    sample_types_1=None,
+    sample_types_2=None,
     colours_file=None,
     method="signed_r2",
     signed_r2_cutoff=None,
@@ -40,7 +40,7 @@ def cell_type_abundance(
         Group 2 label for comparison.
     colours_file : str, optional
         Path to TSV file mapping annotation to colour hex codes.
-        File should have 'annotation' and 'color' columns.
+        File should have 'annotation' and 'colour' columns.
     method : str, default "signed_r2"
         Statistical method for comparison. One of:
         - 'signed_r2': Signed R² from regression
@@ -48,7 +48,7 @@ def cell_type_abundance(
         - 'log2_fc': Log₂ fold-change
         - 'corr': Pearson correlation
     signed_r2_cutoff : float, optional
-        Cutoff for signed_r2 magnitude. If provided, colors are applied
+        Cutoff for signed_r2 magnitude. If provided, colours are applied
         based on both cutoff and p-value significance.
     explain : bool, default False
         If True, print method explanation before analysis.
@@ -57,11 +57,11 @@ def cell_type_abundance(
     -------
     pd.DataFrame
         Results table with columns:
-        - V1: Cell type annotation
-        - V2: Statistical metric value
-        - V3: P-value from Mann-Whitney U test
+        - anno: Cell type annotation
+        - stat_values: Statistical metric value
+        - p_values: P-value from Mann-Whitney U test
         - sig_p: Significance category (p<0.01, p<0.05, etc.)
-        - color: Color code for visualization (if colours_file provided or default)
+        - colour: colour code for visualization (if colours_file provided or default)
     
     Raises
     ------
@@ -99,7 +99,7 @@ def cell_type_abundance(
 
     # Explain method if requested
     if explain:
-        method_info = explain_v2().get(method.lower())
+        method_info = explain_stat_values().get(method.lower())
         if method_info:
             print(f"Method: {method}")
             for k, v in method_info.items():
@@ -145,9 +145,9 @@ def cell_type_abundance(
             print(f"Warning: Could not calculate p-value for {cell_type}: {e}")
             p_value = np.nan
 
-        # Calculate V2 metric
+        # Calculate stat_values metric
         try:
-            v2_value = calculate_v2(
+            C2_value = calculate_C2(
                 subset,
                 sample_types,
                 method=method,
@@ -155,13 +155,13 @@ def cell_type_abundance(
                 group2=sample_types_2
             )
         except Exception as e:
-            print(f"Warning: Could not calculate V2 for {cell_type}: {e}")
-            v2_value = np.nan
+            print(f"Warning: Could not calculate stat_values for {cell_type}: {e}")
+            C2_value = np.nan
 
         results.append({
-            "V1": cell_type,
-            "V2": v2_value,
-            "V3": p_value
+            "anno": cell_type,
+            "stat_values": C2_value,
+            "p_values": p_value
         })
 
     # Convert to DataFrame
@@ -174,18 +174,18 @@ def cell_type_abundance(
     # Add significance categories
     prep_table = add_significance_categories(prep_table)
 
-    # Handle colors
+    # Handle colours
     if colours_file:
         try:
-            col_df = load_colors(colours_file, prep_table["V1"].tolist())
+            col_df = load_colours(colours_file, prep_table["anno"].tolist())
             if col_df is not None:
-                prep_table = prep_table.merge(col_df, on="V1", how="left")
+                prep_table = prep_table.merge(col_df, on="anno", how="left")
             else:
-                prep_table = apply_default_colors(prep_table, method, signed_r2_cutoff)
+                prep_table = apply_default_colours(prep_table, method, signed_r2_cutoff)
         except Exception as e:
-            print(f"Warning: Could not load colors from file: {e}")
-            prep_table = apply_default_colors(prep_table, method, signed_r2_cutoff)
+            print(f"Warning: Could not load colours from file: {e}")
+            prep_table = apply_default_colours(prep_table, method, signed_r2_cutoff)
     else:
-        prep_table = apply_default_colors(prep_table, method, signed_r2_cutoff)
+        prep_table = apply_default_colours(prep_table, method, signed_r2_cutoff)
 
     return prep_table

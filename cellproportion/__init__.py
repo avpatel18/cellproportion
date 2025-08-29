@@ -8,7 +8,7 @@ Main Functions
 --------------
 cell_type_abundance : Compare cell type proportions between two groups
 spatial_cell_type_abundance : Compare proportions within spatial regions
-explain_v2 : Get explanations of available statistical methods
+explain_stat_values : Get explanations of available statistical methods
 
 Statistical Methods
 ------------------
@@ -48,24 +48,24 @@ Spatial analysis:
 Method explanations:
 
 >>> from cellproportion.methods import explain_v2
->>> print(explain_v2())
+>>> print(explain_stat_values())
 """
 
 from ._version import __version__
 from .core import cell_type_abundance
 from .spatial import spatial_cell_type_abundance
-from .methods import calculate_v2, explain_v2
-from .utils import DEFAULT_COLORS, load_metadata, load_colors
+from .methods import calculate_stat_values, explain_stat_values
+from .utils import DEFAULT_COLOURS, load_metadata, load_colours
 
 __all__ = [
     "__version__",
     "cell_type_abundance", 
     "spatial_cell_type_abundance",
-    "calculate_v2",
-    "explain_v2",
-    "DEFAULT_COLORS",
+    "calculate_stat_values",
+    "explain_stat_values",
+    "DEFAULT_COLOURS",
     "load_metadata",
-    "load_colors"
+    "load_colours"
 ]
 
 # Package metadata

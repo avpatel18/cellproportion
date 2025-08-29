@@ -48,7 +48,7 @@ def load_metadata(input_data, annotation, sample_types, sample_ID):
     return mc
 
 
-def load_colors(colours_file, annotations):
+def load_colours(colours_file, annotations):
     """
     Load colour mapping from file or return None.
 
@@ -76,11 +76,11 @@ def load_colors(colours_file, annotations):
             col_df = pd.read_table(colours_file)
             
             # Check required columns
-            if "annotation" not in col_df.columns or "color" not in col_df.columns:
-                raise ValueError("Colours file must contain 'annotation' and 'color' columns")
+            if "annotation" not in col_df.columns or "colour" not in col_df.columns:
+                raise ValueError("Colours file must contain 'annotation' and 'colour' columns")
                 
-            col_df = col_df.rename(columns={"annotation": "V1"})
-            col_df = col_df[col_df["V1"].isin(annotations)]
+            col_df = col_df.rename(columns={"annotation": "anno"})
+            col_df = col_df[col_df["anno"].isin(annotations)]
             return col_df
         except FileNotFoundError:
             raise FileNotFoundError(f"Colours file not found: {colours_file}")
@@ -120,7 +120,7 @@ def validate_groups(data, condition_col, group1, group2):
                         f"Available groups: {list(available_groups)}")
 
 
-def add_significance_categories(df, p_col="V3"):
+def add_significance_categories(df, p_col="p_values"):
     """
     Add significance categories based on p-values.
     
@@ -128,7 +128,7 @@ def add_significance_categories(df, p_col="V3"):
     ----------
     df : pd.DataFrame
         DataFrame with p-values.
-    p_col : str, default "V3"
+    p_col : str, default "p_values"
         Column name containing p-values.
         
     Returns
@@ -146,9 +146,9 @@ def add_significance_categories(df, p_col="V3"):
     return df
 
 
-def apply_default_colors(df, method="signed_r2", cutoff=None, p_col="V3", v2_col="V2"):
+def apply_default_colours(df, method="signed_r2", cutoff=None, p_col="p_values", stat_values_col="stat_values"):
     """
-    Apply default color scheme based on method and significance.
+    Apply default colour scheme based on method and significance.
     
     Parameters
     ----------
@@ -158,47 +158,47 @@ def apply_default_colors(df, method="signed_r2", cutoff=None, p_col="V3", v2_col
         Analysis method used.
     cutoff : float, optional
         Cutoff value for signed_r2 method.
-    p_col : str, default "V3"
+    p_col : str, default "p_values"
         Column name for p-values.
-    v2_col : str, default "V2"
-        Column name for V2 values.
+    stat_values_col : str, default "stat_values"
+        Column name for stat_values values.
         
     Returns
     -------
     pd.DataFrame
-        DataFrame with added 'color' column.
+        DataFrame with added 'colour' column.
     """
-    DEFAULT_COLORS = {
+    DEFAULT_COLOURS = {
         "positive": "#E41A1C",  # red
         "negative": "#377EB8",  # blue
         "grey": "#BDBDBD"       # grey
     }
     
     df = df.copy()
-    df["color"] = DEFAULT_COLORS["grey"]  # Default to grey
+    df["colour"] = DEFAULT_COLOURS["grey"]  # Default to grey
     
     if method.lower() == "signed_r2":
         if cutoff is not None:
             # Use both cutoff and p-value
-            mask_significant = (np.abs(df[v2_col]) >= cutoff) & (df[p_col] < 0.05)
-            df.loc[mask_significant & (df[v2_col] > 0), "color"] = DEFAULT_COLORS["positive"]
-            df.loc[mask_significant & (df[v2_col] < 0), "color"] = DEFAULT_COLORS["negative"]
+            mask_significant = (np.abs(df[stat_values_col]) >= cutoff) & (df[p_col] < 0.05)
+            df.loc[mask_significant & (df[stat_values_col] > 0), "colour"] = DEFAULT_COLOURS["positive"]
+            df.loc[mask_significant & (df[stat_values_col] < 0), "colour"] = DEFAULT_COLOURS["negative"]
         else:
             # Use only p-value
             mask_significant = df[p_col] < 0.05
-            df.loc[mask_significant & (df[v2_col] > 0), "color"] = DEFAULT_COLORS["positive"]
-            df.loc[mask_significant & (df[v2_col] < 0), "color"] = DEFAULT_COLORS["negative"]
+            df.loc[mask_significant & (df[stat_values_col] > 0), "colour"] = DEFAULT_COLOURS["positive"]
+            df.loc[mask_significant & (df[stat_values_col] < 0), "colour"] = DEFAULT_COLOURS["negative"]
     else:
-        # For other methods, color by significance and direction
+        # For other methods, colour by significance and direction
         mask_significant = df[p_col] < 0.05
-        df.loc[mask_significant & (df[v2_col] > 0), "color"] = DEFAULT_COLORS["positive"]
-        df.loc[mask_significant & (df[v2_col] < 0), "color"] = DEFAULT_COLORS["negative"]
+        df.loc[mask_significant & (df[stat_values_col] > 0), "colour"] = DEFAULT_COLOURS["positive"]
+        df.loc[mask_significant & (df[stat_values_col] < 0), "colour"] = DEFAULT_COLOURS["negative"]
     
     return df
 
 
-# Default color constants for external use
-DEFAULT_COLORS = {
+# Default colour constants for external use
+DEFAULT_COLOURS = {
     "positive": "#E41A1C",  # red
     "negative": "#377EB8",  # blue
     "grey": "#BDBDBD"       # grey

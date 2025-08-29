@@ -3,9 +3,9 @@ import pandas as pd
 from statsmodels.formula.api import ols
 from scipy.stats import pearsonr
 
-def explain_v2():
+def explain_stat_values():
     """
-    Returns a dictionary explaining each V2 method, its pros, and cons.
+    Returns a dictionary explaining each stat_values method, its pros, and cons.
     
     Returns
     -------
@@ -39,9 +39,9 @@ def explain_v2():
         }
     }
 
-def calculate_v2(data, condition_col, method="signed_r2", group1=None, group2=None):
+def calculate_stat_values(data, condition_col, method="signed_r2", group1=None, group2=None):
     """
-    Calculate V2 metric for given data and method.
+    Calculate stat_values metric for given data and method.
     
     Parameters
     ----------
@@ -59,7 +59,7 @@ def calculate_v2(data, condition_col, method="signed_r2", group1=None, group2=No
     Returns
     -------
     float
-        Calculated V2 metric value.
+        Calculated stat_values metric value.
     
     Raises
     ------
@@ -98,4 +98,4 @@ def calculate_v2(data, condition_col, method="signed_r2", group1=None, group2=No
         return corr_val
 
     else:
-        raise ValueError(f"Unknown V2 method: {method}. Available methods: signed_r2, mean_diff, log2_fc, corr")
+        raise ValueError(f"Unknown stat_values method: {method}. Available methods: signed_r2, mean_diff, log2_fc, corr")
