@@ -14,7 +14,7 @@ A Python package for comparing cell type proportions between experimental groups
   - `corr` – Pearson correlation with group labels
 - **Spatial Analysis**: Compare proportions within tissue regions/spatial domains
 - **Statistical Testing**: Mann-Whitney U tests with significance categorization
-- **Visualization Ready**: Built-in color schemes and customizable color mapping
+- **Visualization Ready**: Built-in colour schemes and customizable colour mapping
 - **Robust Error Handling**: Comprehensive validation and informative warnings
 
 ## 📦 Installation
@@ -97,27 +97,27 @@ results = cell_type_abundance(
 
 The output DataFrame contains:
 
-- **V1**: Cell type annotation
-- **V2**: Statistical metric value (depends on method chosen)
-- **V3**: P-value from Mann-Whitney U test
+- **anno**: Cell type annotation
+- **stat_values**: Statistical metric value (depends on method chosen)
+- **p_values**: P-value from Mann-Whitney U test
 - **sig_p**: Significance category (`p<0.01`, `p<0.05`, `p<0.1`, `p<0.5`, `p>0.5`)
-- **color**: Color code for visualization
+- **colour**: Colour code for visualization
 
 ```python
 # Example output
-print(results[['V1', 'V2', 'V3', 'sig_p']].head())
-#         V1        V2      V3   sig_p
+print(results[['anno', 'stat_values', 'p_values', 'sig_p']].head())
+#      anno   stat_values   p_values   sig_p
 # 0   T_cell  0.234567  0.0123  p<0.05
 # 1   B_cell -0.123456  0.2341  p<0.5
 # 2  NK_cell  0.456789  0.0001  p<0.01
 ```
 
-## 🎨 Custom Color Mapping
+## 🎨 Custom Colour Mapping
 
-Create a TSV file with your preferred colors:
+Create a TSV file with your preferred colours:
 
 ```tsv
-annotation	color
+annotation	colour
 T_cell	#E41A1C
 B_cell	#377EB8
 NK_cell	#4DAF4A
@@ -128,17 +128,17 @@ Macrophage	#984EA3
 results = cell_type_abundance(
     adata,
     # ... other parameters
-    colours_file="my_colors.tsv"
+    colours_file="my_colours.tsv"
 )
 ```
 
 ## 📈 Statistical Methods Explained
 
 ```python
-from cellproportion.methods import explain_v2
+from cellproportion.methods import explain_stat_values
 
 # Get detailed explanations of all methods
-explanations = explain_v2()
+explanations = explain_stat_values()
 for method, info in explanations.items():
     print(f"\n{method.upper()}:")
     for key, value in info.items():
@@ -183,7 +183,7 @@ for method in methods:
 
 # Compare results across methods
 comparison_df = pd.DataFrame({
-    method: method_comparison[method].set_index('V1')['V2'] 
+    method: method_comparison[method].set_index('anno')['stat_values'] 
     for method in methods
 })
 ```

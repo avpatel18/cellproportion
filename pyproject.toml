@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cellproportion"
-version = "1.0.0"
+version = "1.1.0"
 description = "Cell type proportion analysis for single-cell and spatial transcriptomics data"
 authors = [
     { name = "Ankit Patel", email = "ankit.patel@qmul.ac.uk" }
